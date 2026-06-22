@@ -1,5 +1,7 @@
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 public class Starbucks_ {
@@ -77,6 +79,7 @@ public class Starbucks_ {
         }
         sc.close();
     }
+
     public static void iniciarSesion(Scanner sc) {
         String correoRegistrado;
         String contrasenaRegistrada;
@@ -128,6 +131,7 @@ public class Starbucks_ {
 
         } while (!accesoConcedido);
     }
+
     public static void invitado() {
         System.out.println("☕ Bienvenido invitado a Starbucks Perú");
     }
@@ -138,6 +142,7 @@ public class Starbucks_ {
         System.out.println("2. alimentos");
         System.out.println("Seleccione una opción: ");
     }
+
     //-----------------------------------------------------------------------------------------------------------
     public static double menuBebidas(Scanner sc) {
         double totalGeneral = 0;
@@ -199,6 +204,7 @@ public class Starbucks_ {
         }
         return frappuccinototal;
     }
+
     public static double CafeCaliente(Scanner sc) {
         double CafeCalientetotal = 0;
         int eleccion;
@@ -261,6 +267,7 @@ public class Starbucks_ {
         } while (opcion != 3);
         return eleccion;
     }
+
     public static double menuPastries(Scanner l) {
         int opcion, cantidad;
         double precio = 0;
@@ -331,119 +338,126 @@ public class Starbucks_ {
 
     //--------------------------------------------------------------------------------------------------
     public static String elegirDepartamento(Scanner sc) {
-        String departamento = "";
+
+        ArrayList<String> departamentos = new ArrayList<>();
+
+        departamentos.add("Lima");
+        departamentos.add("Arequipa");
+        departamentos.add("Cusco");
+        departamentos.add("Trujillo");
+        departamentos.add("Piura");
+        departamentos.add("Puno");
+        departamentos.add("Tacna");
+
         System.out.println("======= DEPARTAMENTO DE REGISTRO =======");
-        System.out.println("1. Lima");
-        System.out.println("2. Arequipa");
-        System.out.println("3. Cusco");
-        System.out.println("4. Trujillo");
-        System.out.println("5. Piura");
-        System.out.println("6. Puno");
-        System.out.println("7. Tacna");
+
+        for (int i = 0; i < departamentos.size(); i++) {
+            System.out.println((i + 1) + ". " + departamentos.get(i));
+        }
+
         System.out.println("Seleccione su departamento:");
         int opcion = sc.nextInt();
         sc.nextLine();
-        switch (opcion) {
-            case 1:
-                departamento = "Lima";
-                break;
-            case 2:
-                departamento = "Arequipa";
-                break;
-            case 3:
-                departamento = "Cusco";
-                break;
-            case 4:
-                departamento = "Trujillo";
-                break;
-            case 5:
-                departamento = "Piura";
-                break;
-            case 6:
-                departamento = "Puno";
-                break;
-            case 7:
-                departamento = "Tacna";
-                break;
 
-            default:
-                System.out.println("Opcion no valida.");
-                System.exit(0);
+        if (opcion < 1 || opcion > departamentos.size()) {
+            System.out.println("Opcion no valida.");
+            System.exit(0);
         }
+
+        String departamento = departamentos.get(opcion - 1);
+
         System.out.println("Departamento registrado: " + departamento);
+
         return departamento;
     }
 
     public static String elegirTienda(Scanner sc, String departamento) {
+
         String tienda = "";
+
         System.out.println("======= LUGAR DE RECOJO =======");
         System.out.println("Su departamento registrado es: " + departamento);
         System.out.println("Recoger en Starbucks " + departamento + "?");
         System.out.println("1. Si, recoger ahi");
         System.out.println("2. No, elegir otra tienda");
         System.out.println("Seleccione:");
+
         int opcion = sc.nextInt();
         sc.nextLine();
+
         if (opcion == 1) {
+
             tienda = "Starbucks " + departamento;
             System.out.println("Perfecto! Recoges en: " + tienda);
+
         } else if (opcion == 2) {
+
             tienda = elegirOtraTienda(sc);
+
         } else {
+
             System.out.println("Opcion no valida.");
             System.exit(0);
+
         }
+
         return tienda;
     }
 
     public static String elegirOtraTienda(Scanner sc) {
-        String tienda = "";
+
+        ArrayList<String> tiendas = new ArrayList<>();
+
+        tiendas.add("Starbucks Lima");
+        tiendas.add("Starbucks Arequipa");
+        tiendas.add("Starbucks Cusco");
+        tiendas.add("Starbucks Trujillo");
+        tiendas.add("Starbucks Piura");
+
         System.out.println("Seleccione el departamento donde recoger:");
-        System.out.println("1. Lima");
-        System.out.println("2. Arequipa");
-        System.out.println("3. Cusco");
-        System.out.println("4. Trujillo");
-        System.out.println("5. Piura");
+
+        for (int i = 0; i < tiendas.size(); i++) {
+            System.out.println((i + 1) + ". " + tiendas.get(i));
+        }
+
         System.out.println("Seleccione:");
+
         int opcion = sc.nextInt();
         sc.nextLine();
-        switch (opcion) {
-            case 1:
-                tienda = "Starbucks Lima";
-                break;
-            case 2:
-                tienda = "Starbucks Arequipa";
-                break;
-            case 3:
-                tienda = "Starbucks Cusco";
-                break;
-            case 4:
-                tienda = "Starbucks Trujillo";
-                break;
-            case 5:
-                tienda = "Starbucks Piura";
-                break;
-            default:
-                System.out.println("Opcion no valida.");
-                System.exit(0);
+
+        if (opcion < 1 || opcion > tiendas.size()) {
+            System.out.println("Opcion no valida.");
+            System.exit(0);
         }
+
+        String tienda = tiendas.get(opcion - 1);
+
         System.out.println("Recoges en: " + tienda);
+
         return tienda;
     }
 
     public static String validarPagoTarjeta(Scanner sc, double total) {
+
         String numeroTarjeta = "";
         String fechaVencimiento = "";
         String cvv = "";
+
         boolean pagoAprobado = false;
+
         System.out.println("Monto total a pagar con tarjeta: S/ " + total);
+
         do {
+
             System.out.println("Ingrese los 16 digitos de su tarjeta:");
             numeroTarjeta = sc.nextLine();
+
             System.out.println("Ingrese la fecha de caducidad (MM/AA):");
             fechaVencimiento = sc.nextLine();
+
             System.out.println("Ingrese el codigo de seguridad (CVV):");
             cvv = sc.nextLine();
+
             boolean tarjetaOK = numeroTarjeta.length() == 16;
             boolean cvvOK = cvv.length() == 3;
             boolean fechaOK = false;
@@ -452,8 +466,8 @@ public class Starbucks_ {
 
                 String partes[] = fechaVencimiento.split("/");
 
-                // Reemplazo con Array y estructura for para procesar los datos de la fecha
                 int[] datosFecha = new int[partes.length];
+
                 for (int i = 0; i < partes.length; i++) {
                     datosFecha[i] = Integer.parseInt(partes[i]);
                 }
@@ -475,44 +489,61 @@ public class Starbucks_ {
                 }
 
             }
+
             if (tarjetaOK && fechaOK && cvvOK) {
+
                 System.out.println("A U T O R I Z A N D O    F O N D O S...");
                 System.out.println("Transaccion exitosa. Pago aprobado!");
+
                 pagoAprobado = true;
+
             } else {
+
                 System.out.println("Operacion denegada. Verifique sus datos:");
+
                 if (!tarjetaOK) {
                     System.out.println("La tarjeta debe tener 16 digitos.");
                 }
+
                 if (!fechaOK) {
                     System.out.println("Targeta Caducada. Use MM/AA de una targeta vigente.");
                 }
+
                 if (!cvvOK) {
                     System.out.println("El CVV debe tener 3 digitos.");
                 }
+
                 System.out.println("Intente nuevamente.");
             }
+
         } while (!pagoAprobado);
+
         String numeroOculto = "************" + numeroTarjeta.substring(12);
+
         return numeroOculto;
     }
 
     public static void generarBoleta(String nombre, String dni, String correo,
                                      String telefono, String departamento,
                                      double total, String tarjeta, String tienda) {
+
         double subtotal = total / 1.18;
         double igv = total - subtotal;
+
         String numeroBoleta = "B001-00" + (int) (Math.random() * 900 + 100);
+
         LocalDateTime ahora = LocalDateTime.now();
+
         String fecha = ahora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String hora = ahora.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
         System.out.println("============================================");
-        System.out.println("             STARBUCKS COFFEE                 ");
-        System.out.println("             RUC: 20100070970                   ");
+        System.out.println("             STARBUCKS COFFEE               ");
+        System.out.println("             RUC: 20100070970               ");
         System.out.println("   Av. Benavides 415, Miraflores - Lima     ");
-        System.out.println("             Tel: (01) 242-2600                 ");
+        System.out.println("             Tel: (01) 242-2600             ");
         System.out.println("============================================");
-        System.out.println("              BOLETA DE VENTA                 ");
+        System.out.println("              BOLETA DE VENTA               ");
         System.out.println("  Boleta N: " + numeroBoleta);
         System.out.println("  Fecha: " + fecha + "   Hora: " + hora);
         System.out.println("--------------------------------------------");
@@ -530,9 +561,8 @@ public class Starbucks_ {
         System.out.println("  Metodo de pago  : Tarjeta " + tarjeta);
         System.out.println("  Tienda de recojo: " + tienda);
         System.out.println("============================================");
-        System.out.println("     Gracias por tu visita a Starbucks!      ");
+        System.out.println("     Gracias por tu visita a Starbucks!     ");
         System.out.println("    Esperamos verte pronto. Have a nice day!");
         System.out.println("============================================");
-
     }
 }
