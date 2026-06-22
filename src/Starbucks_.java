@@ -188,8 +188,6 @@ public class Starbucks_ {
         System.out.println("==========================================");
         System.out.println("Ingrese opción: ");
         eleccion = scanner.nextInt();
-
-        // Reemplazo con Array para optimizar el almacenamiento de los precios fijos
         double[] precios = {17.50, 17.50, 17.00, 16.00, 18.00, 16.00, 17.50, 16.50, 16.00, 17.50};
 
         if (eleccion >= 1 && eleccion <= 10) {
@@ -292,7 +290,6 @@ public class Starbucks_ {
         System.out.println("Ingrese cantidad: ");
         cantidad = l.nextInt();
 
-        // Reemplazo con Array para mapear los precios fijos
         double[] precios = {11.00, 10.50, 10.50, 7.50, 10.50, 7.50, 10.50, 10.00, 7.00, 7.00};
         precio = precios[opcion - 1];
 
@@ -326,7 +323,6 @@ public class Starbucks_ {
         System.out.println("Ingrese cantidad: ");
         cantidad = l.nextInt();
 
-        // Reemplazo con Array para mapear los precios fijos
         double[] precios = {17.50, 7.50, 16.50, 16.50, 14.50, 13.50, 15.00, 16.00, 13.50, 14.50};
         precio = precios[opcion - 1];
 
