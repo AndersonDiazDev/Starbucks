@@ -1,0 +1,40 @@
+==================================================
+                 STARBUCKS COFFEE                 
+                 RUC: 20100070970                 
+      Av. Benavides 415, Miraflores - Lima        
+                 Tel: (01) 242-2600               
+==================================================
+                 BOLETA DE VENTA                  
+ Boleta N°       : B001-651862
+ Fecha           : 23/06/2026
+ Hora            : 09:36:30
+ Cod. Validacion : SBX156098
+--------------------------------------------------
+ DATOS DEL CLIENTE
+--------------------------------------------------
+ Nombre       : Anderson
+ DNI          : 12345678
+ Correo       : ggg@gmail.com
+ Telefono     : 987642112
+ Departamento : Lima
+--------------------------------------------------
+ DETALLE DE COMPRA
+--------------------------------------------------
+ Bebida Gratis de Cumpleaños x1  ->  S/ 0.0
+ Caramel Macchiato x4  ->  S/ 60.0
+ Ultimate Caramel Frappuccino x4  ->  S/ 68.0
+ Sandwich Pavita & Queso x4  ->  S/ 58.0
+--------------------------------------------------
+ Subtotal sin IGV : S/ 141.86
+ IGV (18%)        : S/ 25.54
+ TOTAL            : S/ 167.4
+--------------------------------------------------
+ Metodo de pago   : Tarjeta (************1234)
+ Tienda de recojo : Starbucks Lima
+--------------------------------------------------
+ Esta boleta sirve como comprobante de compra.    
+ Conserve este documento para cualquier consulta. 
+--------------------------------------------------
+      Gracias por tu visita a Starbucks!          
+     Esperamos verte pronto. Have a nice day!     
+==================================================

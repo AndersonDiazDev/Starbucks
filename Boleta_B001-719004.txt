@@ -1,0 +1,38 @@
+==================================================
+                 STARBUCKS COFFEE                 
+                 RUC: 20100070970                 
+      Av. Benavides 415, Miraflores - Lima        
+                 Tel: (01) 242-2600               
+==================================================
+                 BOLETA DE VENTA                  
+ Boleta N°       : B001-719004
+ Fecha           : 23/06/2026
+ Hora            : 09:54:01
+ Cod. Validacion : SBX923961
+--------------------------------------------------
+ DATOS DEL CLIENTE
+--------------------------------------------------
+ Nombre       : Anderson
+ DNI          : 12345678
+ Correo       : ddd@gmail.com
+ Telefono     : 987654321
+ Departamento : Tacna
+--------------------------------------------------
+ DETALLE DE COMPRA
+--------------------------------------------------
+ Bebida Gratis de Cumpleaños x1  ->  S/ 0.0
+ Sandwich Pavita & Queso x28  ->  S/ 406.0
+--------------------------------------------------
+ Subtotal sin IGV : S/ 309.66
+ IGV (18%)        : S/ 55.74
+ TOTAL            : S/ 365.4
+--------------------------------------------------
+ Metodo de pago   : Tarjeta (************5678)
+ Tienda de recojo : Starbucks Tacna
+--------------------------------------------------
+ Esta boleta sirve como comprobante de compra.    
+ Conserve este documento para cualquier consulta. 
+--------------------------------------------------
+      Gracias por tu visita a Starbucks!          
+     Esperamos verte pronto. Have a nice day!     
+==================================================

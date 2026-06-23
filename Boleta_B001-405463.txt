@@ -1,0 +1,39 @@
+==================================================
+                 STARBUCKS COFFEE                 
+                 RUC: 20100070970                 
+      Av. Benavides 415, Miraflores - Lima        
+                 Tel: (01) 242-2600               
+==================================================
+                 BOLETA DE VENTA                  
+ Boleta N°       : B001-405463
+ Fecha           : 23/06/2026
+ Hora            : 08:01:34
+ Cod. Validacion : SBX503137
+--------------------------------------------------
+ DATOS DEL CLIENTE
+--------------------------------------------------
+ Nombre       : saramanbiche
+ DNI          : 60170499
+ Correo       : Usuario_Anonimo
+ Telefono     : 934020901
+ Departamento : Puno
+--------------------------------------------------
+ DETALLE DE COMPRA
+--------------------------------------------------
+ Latte x2  ->  S/ 30.0
+ Muffin de Naranja & Chocochips x2  ->  S/ 21.0
+ Croissant de Mantequilla x2  ->  S/ 15.0
+--------------------------------------------------
+ Subtotal sin IGV : S/ 55.93
+ IGV (18%)        : S/ 10.07
+ TOTAL            : S/ 66.0
+--------------------------------------------------
+ Metodo de pago   : Tarjeta (************3456)
+ Tienda de recojo : Starbucks Puno
+--------------------------------------------------
+ Esta boleta sirve como comprobante de compra.    
+ Conserve este documento para cualquier consulta. 
+--------------------------------------------------
+      Gracias por tu visita a Starbucks!          
+     Esperamos verte pronto. Have a nice day!     
+==================================================

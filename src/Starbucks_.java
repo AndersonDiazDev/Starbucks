@@ -1,14 +1,20 @@
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 public class Starbucks_ {
     static final String ADMIN_USUARIO = "admin@starbucks.com";
     static final String ADMIN_CONTRASENA = "admin1234";
+    static ArrayList<String> bebidasNombres = new ArrayList<>();
+    static ArrayList<Double> bebidasPrecios = new ArrayList<>();
 
+    static ArrayList<String> alimentosNombres = new ArrayList<>();
+    static ArrayList<Double> alimentosPrecios = new ArrayList<>();
     static ArrayList<String> clientesCorreos = new ArrayList<>();
     static ArrayList<String> clientesContrasenas = new ArrayList<>();
     static ArrayList<String> clientesNombres = new ArrayList<>();
@@ -17,23 +23,29 @@ public class Starbucks_ {
     static ArrayList<String> clientesFechaNacimiento = new ArrayList<>();
     static ArrayList<Integer> clientesCompras = new ArrayList<>();
     static ArrayList<Double> clientesTotalGastado = new ArrayList<>();
-
     static ArrayList<String> carritoNombres = new ArrayList<>();
     static ArrayList<Integer> cantidades = new ArrayList<>();
     static ArrayList<Double> preciosUnitarios = new ArrayList<>();
-
     static ArrayList<String> productosNombres = new ArrayList<>();
     static ArrayList<Double> productosPrecios = new ArrayList<>();
-
     static int indiceClienteActivo = -1;
-
+    static String nombreSesion = "";
+    static String dniSesion = "";
+    static String telefonoSesion = "";
+    static String departamentoSesion = "";
+    static boolean bebidaCumpleanosGratis = false;
+    static boolean bebidaClienteFrecuente = false;
     public static void main(String[] args) {
-
-        inicializarProductos();
-
+        cargarClientes();
         Scanner sc = new Scanner(System.in);
-        int opcion;
 
+        ejecutorSistema(sc);
+
+        sc.close();
+    }
+    public static void ejecutorSistema (Scanner sc) {
+        inicializarProductos();
+        int opcion;
         System.out.println("=================================");
         System.out.println("     |   STARBUCKS PERÚ   |      ");
         System.out.println("=================================");
@@ -44,7 +56,6 @@ public class Starbucks_ {
         System.out.print("Seleccione una opción: ");
         opcion = sc.nextInt();
         sc.nextLine();
-
         switch (opcion) {
             case 1:
                 iniciarSesion(sc);
@@ -54,20 +65,18 @@ public class Starbucks_ {
                 break;
             case 3:
                 panelAdministrador(sc);
-                sc.close();
+                ejecutorSistema(sc);
                 return;
             case 4:
                 System.out.println("☕ Gracias por visitar Starbucks Perú");
-                sc.close();
                 return;
             default:
                 System.out.println("❌ Opción inválida");
-                sc.close();
                 return;
         }
-
         verificarCumpleanos();
-
+        otorgarBebidaCumpleanos();
+        otorgarBebidaClienteFrecuente();
         int opselc;
         do {
             menuStarbucks();
@@ -80,10 +89,11 @@ public class Starbucks_ {
                 menuAlimentos(sc);
             } else if (opselc == 3) {
                 verCarrito();
+            } else if (opselc == 5) {
+                mostrarProductosDinamicos(sc);
             } else if (opselc != 4) {
                 System.out.println("❌ Opción inválida");
             }
-
             if (opselc != 4) {
                 System.out.println("¿Qué desea hacer?");
                 System.out.println("1. Volver al Menú Principal");
@@ -101,52 +111,112 @@ public class Starbucks_ {
                     opselc = 1;
                 }
             }
-
         } while (opselc != 4);
-
         double totalGeneral = calcularTotalCarrito();
-
         if (totalGeneral > 0) {
             verCarrito();
-
             totalGeneral = aplicarDescuento(totalGeneral);
-
-            System.out.println("=== REGISTRO DE DATOS PARA COMPRA ===");
-            System.out.print("Ingrese su nombre: ");
-            String nombre = sc.nextLine();
-            System.out.print("Ingrese su DNI: ");
-            String dni = sc.nextLine();
-            String telefono = pedirTelefono(sc);
-
-            String depto = elegirDepartamento(sc);
+            String nombre;
+            String dni;
+            String telefono;
+            if (indiceClienteActivo != -1) {
+                nombre = clientesNombres.get(indiceClienteActivo);
+                dni = clientesDNI.get(indiceClienteActivo);
+                telefono = clientesTelefonos.get(indiceClienteActivo);
+                System.out.println("=================================");
+                System.out.println("DATOS DEL CLIENTE RECUPERADOS");
+                System.out.println("=================================");
+                System.out.println("Nombre   : " + nombre);
+                System.out.println("DNI      : " + dni);
+                System.out.println("Telefono : " + telefono);
+            } else {
+                System.out.println("=== REGISTRO DE DATOS PARA COMPRA ===");
+                System.out.print("Ingrese su nombre: ");
+                nombre = sc.nextLine();
+                System.out.print("Ingrese su DNI: ");
+                dni = sc.nextLine();
+                telefono = pedirTelefono(sc);
+            }
+            String depto;
+            if (indiceClienteActivo != -1) {
+                if (departamentoSesion.equals("")) {
+                    depto = elegirDepartamento(sc);
+                    departamentoSesion = depto;
+                } else {
+                    depto = departamentoSesion;
+                }
+            } else {
+                depto = elegirDepartamento(sc);
+            }
             String tienda = elegirTienda(sc, depto);
             String metodoPago = elegirMetodoPago(sc, totalGeneral);
-
             if (indiceClienteActivo != -1) {
                 int comprasActuales = clientesCompras.get(indiceClienteActivo);
                 clientesCompras.set(indiceClienteActivo, comprasActuales + 1);
                 double gastadoActual = clientesTotalGastado.get(indiceClienteActivo);
                 clientesTotalGastado.set(indiceClienteActivo, gastadoActual + totalGeneral);
+                actualizarArchivoClientes();
             }
 
             String correoParaBoleta = (indiceClienteActivo != -1)
                     ? clientesCorreos.get(indiceClienteActivo)
                     : "Usuario_Anonimo";
-
             animacionCarga();
-
             generarBoleta(nombre, dni, correoParaBoleta, telefono, depto, totalGeneral, metodoPago, tienda);
         } else {
             System.out.println("☕ No se realizaron compras. ¡Que tenga un buen día!");
         }
-        sc.close();
     }
-
     public static void inicializarProductos() {
-        productosNombres.add("Café Americano"); productosPrecios.add(10.50);
-        productosNombres.add("Frappuccino de Manjar Blanco"); productosPrecios.add(16.50);
-        productosNombres.add("Muffin de Arándanos"); productosPrecios.add(8.00);
-        productosNombres.add("Croissant de Jamón y Queso"); productosPrecios.add(11.00);
+
+        if (!productosNombres.isEmpty()) {
+            return;
+        }
+
+        productosNombres.add("Café Americano");
+        productosPrecios.add(10.50);
+
+        productosNombres.add("Frappuccino de Manjar Blanco");
+        productosPrecios.add(16.50);
+
+        productosNombres.add("Muffin de Arándanos");
+        productosPrecios.add(8.00);
+
+        productosNombres.add("Croissant de Jamón y Queso");
+        productosPrecios.add(11.00);
+    }
+    public static void mostrarProductosDinamicos(Scanner sc) {
+
+        if (productosNombres.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
+
+        System.out.println("========= PRODUCTOS AGREGADOS =========");
+
+        for (int i = 0; i < productosNombres.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + productosNombres.get(i)
+                    + " - S/ "
+                    + productosPrecios.get(i));
+        }
+
+        System.out.print("Seleccione producto: ");
+        int opcion = sc.nextInt();
+
+        if (opcion < 1 || opcion > productosNombres.size()) {
+            System.out.println("❌ Opción inválida");
+            return;
+        }
+
+        System.out.print("Cantidad: ");
+        int cantidad = sc.nextInt();
+
+        agregarAlCarrito(
+                productosNombres.get(opcion - 1),
+                cantidad,
+                productosPrecios.get(opcion - 1)
+        );
     }
 
     public static void panelAdministrador(Scanner sc) {
@@ -157,14 +227,11 @@ public class Starbucks_ {
         String usuarioIngresado = sc.nextLine();
         System.out.print("Ingrese contraseña: ");
         String contrasenaIngresada = sc.nextLine();
-
         if (!usuarioIngresado.equals(ADMIN_USUARIO) || !contrasenaIngresada.equals(ADMIN_CONTRASENA)) {
             System.out.println("❌ Credenciales de administrador incorrectas.");
             return;
         }
-
         System.out.println("✅ Acceso de administrador concedido.");
-
         int opAdmin;
         do {
             System.out.println("=========================================");
@@ -179,19 +246,36 @@ public class Starbucks_ {
             System.out.print("Seleccione una opción: ");
             opAdmin = sc.nextInt();
             sc.nextLine();
-
             switch (opAdmin) {
-                case 1: adminVerClientes(); break;
-                case 2: adminEstadisticas(); break;
-                case 3: adminAñadirproductos(sc); break;
-                case 4: adminEliminarproductos(sc); break;
-                case 5: adminClientesFrecuentes(); break;
-                case 6: System.out.println("Saliendo del panel de administrador..."); break;
-                default: System.out.println("❌ Opción inválida");
+                case 1:
+                    adminVerClientes();
+                    break;
+
+                case 2:
+                    adminEstadisticas();
+                    break;
+
+                case 3:
+                    adminAñadirproductos(sc);
+                    break;
+
+                case 4:
+                    adminEliminarproductos(sc);
+                    break;
+
+                case 5:
+                    adminClientesFrecuentes();
+                    break;
+
+                case 6:
+                    System.out.println("Saliendo del panel de administrador...");
+                    return;
+
+                default:
+                    System.out.println("❌ Opción inválida");
             }
         } while (opAdmin != 6);
     }
-
     public static void adminVerClientes() {
         if (clientesCorreos.isEmpty()) {
             System.out.println("No hay clientes registrados aún.");
@@ -211,7 +295,6 @@ public class Starbucks_ {
         }
         System.out.println("==========================================");
     }
-
     public static void adminEstadisticas() {
         System.out.println("========= ESTADÍSTICAS =========");
         System.out.println("Total clientes registrados: " + clientesCorreos.size());
@@ -228,45 +311,85 @@ public class Starbucks_ {
         }
         System.out.println("Clientes frecuentes (3+ compras): " + frecuentes);
     }
-
     public static void adminAñadirproductos(Scanner sc) {
-        System.out.print("Ingrese el nombre del nuevo producto: ");
-        String nuevoProducto = sc.nextLine();
-        System.out.print("Ingrese el precio del producto (S/): ");
-        double nuevoPrecio = sc.nextDouble();
+
+        System.out.println("1. Bebida");
+        System.out.println("2. Alimento");
+
+        int categoria = sc.nextInt();
         sc.nextLine();
 
-        productosNombres.add(nuevoProducto);
-        productosPrecios.add(nuevoPrecio);
+        System.out.print("Ingrese nombre: ");
+        String nombre = sc.nextLine();
 
-        System.out.println("✅ Producto '" + nuevoProducto + "' añadido correctamente con precio S/ " + nuevoPrecio);
+        System.out.print("Ingrese precio: ");
+        double precio = sc.nextDouble();
+        sc.nextLine();
+
+        if (categoria == 1) {
+
+            productosNombres.add(nombre);
+            productosPrecios.add(precio);
+
+            System.out.println("✅ Bebida agregada.");
+
+        } else if (categoria == 2) {
+
+            productosNombres.add(nombre);
+            productosPrecios.add(precio);
+
+            System.out.println("✅ Alimento agregado.");
+
+        } else {
+
+            System.out.println("❌ Categoria invalida.");
+
+        }
     }
-
     public static void adminEliminarproductos(Scanner sc) {
+
         if (productosNombres.isEmpty()) {
-            System.out.println("No hay productos registrados en el sistema.");
+
+            System.out.println("❌ No existen productos registrados para eliminar.");
             return;
+
         }
 
-        System.out.print("Ingrese el nombre del producto a eliminar: ");
-        String productoEliminar = sc.nextLine();
-        boolean encontrado = false;
+        System.out.println("=================================");
+        System.out.println("      PRODUCTOS REGISTRADOS");
+        System.out.println("=================================");
 
         for (int i = 0; i < productosNombres.size(); i++) {
-            if (productosNombres.get(i).equalsIgnoreCase(productoEliminar)) {
-                productosNombres.remove(i);
-                productosPrecios.remove(i);
-                System.out.println("✅ Producto eliminado correctamente.");
-                encontrado = true;
-                break;
-            }
+
+            System.out.println((i + 1) + ". " +
+                    productosNombres.get(i) +
+                    " - S/ " +
+                    productosPrecios.get(i));
+
         }
 
-        if (!encontrado) {
-            System.out.println("❌ No se encontró ningún producto con ese nombre.");
+        System.out.print("Seleccione el numero del producto a eliminar: ");
+
+        int opcion = sc.nextInt();
+        sc.nextLine();
+
+        if (opcion < 1 || opcion > productosNombres.size()) {
+
+            System.out.println("❌ Opcion invalida.");
+            return;
+
         }
+
+        String productoEliminado =
+                productosNombres.get(opcion - 1);
+
+        productosNombres.remove(opcion - 1);
+        productosPrecios.remove(opcion - 1);
+
+        System.out.println("✅ Producto eliminado correctamente.");
+        System.out.println("Producto eliminado: " + productoEliminado);
+
     }
-
     public static void adminClientesFrecuentes() {
         System.out.println("========= CLIENTES FRECUENTES (3+ compras) =========");
         boolean hayFrecuentes = false;
@@ -290,7 +413,6 @@ public class Starbucks_ {
         System.out.println("Seleccione: ");
         int opLogin = sc.nextInt();
         sc.nextLine();
-
         if (opLogin == 2) {
             registrarCliente(sc);
         } else if (opLogin == 1) {
@@ -299,12 +421,10 @@ public class Starbucks_ {
             System.out.println("❌ Opción inválida");
         }
     }
-
     public static void registrarCliente(Scanner sc) {
         System.out.println("=================================");
         System.out.println("       CREAR UNA CUENTA          ");
         System.out.println("=================================");
-
         String correoRegistrado;
         do {
             System.out.println("Registre su correo Gmail: ");
@@ -313,7 +433,6 @@ public class Starbucks_ {
                 System.out.println("❌ El correo debe terminar en @gmail.com");
             }
         } while (!correoRegistrado.endsWith("@gmail.com"));
-
         for (int i = 0; i < clientesCorreos.size(); i++) {
             if (clientesCorreos.get(i).equals(correoRegistrado)) {
                 System.out.println("❌ Ese correo ya está registrado. Inicie sesión.");
@@ -321,7 +440,6 @@ public class Starbucks_ {
                 return;
             }
         }
-
         String contrasenaRegistrada;
         do {
             System.out.println("Cree su contraseña (mínimo 8 caracteres): ");
@@ -330,18 +448,16 @@ public class Starbucks_ {
                 System.out.println("❌ La contraseña es muy corta");
             }
         } while (contrasenaRegistrada.length() < 8);
-
         System.out.println("Ingrese su nombre completo: ");
         String nombreReg = sc.nextLine();
-
         System.out.println("Ingrese su DNI: ");
         String dniReg = sc.nextLine();
-
         String telefonoReg = pedirTelefono(sc);
-
-        System.out.println("Ingrese su fecha de nacimiento (DD/MM) para regalo de cumpleaños: ");
+        System.out.println("Ingrese su fecha de nacimiento (DD/MM/YYYY) : ");
         String fechaNac = sc.nextLine();
-
+        if (fechaNac.length() >= 5) {
+            fechaNac = fechaNac.substring(0, 5);
+        }
         clientesCorreos.add(correoRegistrado);
         clientesContrasenas.add(contrasenaRegistrada);
         clientesNombres.add(nombreReg);
@@ -350,25 +466,52 @@ public class Starbucks_ {
         clientesFechaNacimiento.add(fechaNac);
         clientesCompras.add(0);
         clientesTotalGastado.add(0.0);
-
+        guardarClienteEnArchivo(
+                correoRegistrado,
+                contrasenaRegistrada,
+                nombreReg,
+                dniReg,
+                telefonoReg,
+                fechaNac
+        );
         indiceClienteActivo = clientesCorreos.size() - 1;
-
         System.out.println("✅ Cuenta creada correctamente.");
         System.out.println("☕ Bienvenido a Starbucks Perú, " + nombreReg + "!");
     }
-
+    public static void guardarClienteEnArchivo(
+            String correo,
+            String contrasena,
+            String nombre,
+            String dni,
+            String telefono,
+            String fechaNacimiento) {
+        try {
+            FileWriter escritor = new FileWriter("clientes.txt", true);
+            escritor.write(
+                    correo + "|" +
+                            contrasena + "|" +
+                            nombre + "|" +
+                            dni + "|" +
+                            telefono + "|" +
+                            fechaNacimiento + "|" +
+                            0 + "|" +
+                            0.0 + "\n"
+            );
+            escritor.close();
+        } catch (IOException e) {
+            System.out.println("Error al guardar cliente.");
+        }
+    }
     public static void loginCliente(Scanner sc) {
         System.out.println("=================================");
         System.out.println("         INICIAR SESIÓN          ");
         System.out.println("=================================");
-
         boolean accesoConcedido = false;
         do {
             System.out.println("Ingrese su correo Gmail: ");
             String correoLogin = sc.nextLine();
             System.out.println("Ingrese su contraseña: ");
             String contrasenaLogin = sc.nextLine();
-
             boolean encontrado = false;
             for (int i = 0; i < clientesCorreos.size(); i++) {
                 if (clientesCorreos.get(i).equals(correoLogin) &&
@@ -386,48 +529,74 @@ public class Starbucks_ {
             }
         } while (!accesoConcedido);
     }
-
     public static void invitado() {
         System.out.println("☕ Bienvenido invitado a Starbucks Perú");
         indiceClienteActivo = -1;
     }
-
     public static void verificarCumpleanos() {
         if (indiceClienteActivo == -1) return;
-
         LocalDateTime ahora = LocalDateTime.now();
         String diaHoy = ahora.format(DateTimeFormatter.ofPattern("dd"));
         String mesHoy = ahora.format(DateTimeFormatter.ofPattern("MM"));
         String hoyDDMM = diaHoy + "/" + mesHoy;
-
         String fechaNacCliente = clientesFechaNacimiento.get(indiceClienteActivo);
         int comprasCliente = clientesCompras.get(indiceClienteActivo);
-
         if (fechaNacCliente.equals(hoyDDMM)) {
+            bebidaCumpleanosGratis = true;
             System.out.println("==============================================");
             System.out.println("  🎂 ¡FELIZ CUMPLEAÑOS, " + clientesNombres.get(indiceClienteActivo).toUpperCase() + "! 🎂");
             System.out.println("==============================================");
             if (comprasCliente >= 3) {
-                System.out.println("🎁 Por ser cliente frecuente Y ser tu cumpleaños,");
-                System.out.println("   ¡tienes una bebida GRATIS de hasta S/17.00!");
-                System.out.println("   Mencíonalo al barista al recoger tu pedido.");
+                System.out.println("🎁 Por ser cliente frecuente y cumplir años hoy,");
+                System.out.println("   Starbucks te regala una bebida a elección.");
             } else {
-                System.out.println("🎁 ¡Por tu cumpleaños, tienes una bebida GRATIS");
-                System.out.println("   de hasta S/15.00! Menciónalo al recoger.");
+                System.out.println("🎁 Starbucks te regala una bebida a elección.");
             }
+            System.out.println("✅ Bebida gratuita agregada al pedido.");
             System.out.println("==============================================");
-        } else if (comprasCliente >= 3) {
-            System.out.println("⭐ ¡Hola cliente frecuente! Gracias por tu fidelidad.");
-            System.out.println("   Tienes un 5% de descuento adicional en tu compra de hoy.");
+        }
+        else if (comprasCliente >= 3) {
+            bebidaClienteFrecuente = true;
+            System.out.println("⭐ ¡Hola cliente frecuente!");
+            System.out.println("🎁 Starbucks te obsequia una bebida sorpresa.");
         }
     }
-
+    public static void otorgarBebidaCumpleanos() {
+        if (!bebidaCumpleanosGratis) {
+            return;
+        }
+        carritoNombres.add("Bebida Gratis de Cumpleaños");
+        cantidades.add(1);
+        preciosUnitarios.add(0.0);
+        System.out.println("🎁 Se agregó una bebida gratis de cumpleaños al carrito.");
+        bebidaCumpleanosGratis = false;
+    }
+    public static void otorgarBebidaClienteFrecuente() {
+        if (!bebidaClienteFrecuente) {
+            return;
+        }
+        ArrayList<String> bebidas = new ArrayList<>();
+        bebidas.add("Latte");
+        bebidas.add("Americano");
+        bebidas.add("Mocha Cafe");
+        bebidas.add("Flat White");
+        bebidas.add("Caramel Macchiato");
+        int aleatorio = (int)(Math.random() * bebidas.size());
+        String bebidaSeleccionada = bebidas.get(aleatorio);
+        carritoNombres.add(bebidaSeleccionada + " GRATIS");
+        cantidades.add(1);
+        preciosUnitarios.add(0.0);
+        System.out.println("☕ Bebida gratuita agregada por cliente frecuente:");
+        System.out.println("🎁 " + bebidaSeleccionada);
+        bebidaClienteFrecuente = false;
+    }
     public static void menuStarbucks() {
         System.out.println("========== C A T E G O R I A S ==========");
         System.out.println("1. Bebidas");
         System.out.println("2. Alimentos");
         System.out.println("3. Ver carrito 🛒");
         System.out.println("4. Proceder a pagar");
+        System.out.println("5. Productos nuevos");
         System.out.println("Seleccione una opción: ");
     }
     public static void agregarAlCarrito(String nombre, int cantidad, double precioUnitario) {
@@ -448,7 +617,6 @@ public class Starbucks_ {
         System.out.println("✅ Agregado al carrito: " + cantidad + "x " + nombre +
                 " | Subtotal: S/ " + (Math.round(precioUnitario * cantidad * 100) / 100.0));
     }
-
     public static void verCarrito() {
         if (carritoNombres.isEmpty()) {
             System.out.println("🛒 El carrito está vacío.");
@@ -467,7 +635,6 @@ public class Starbucks_ {
         System.out.println("TOTAL: S/ " + (Math.round(totalCarrito * 100) / 100.0));
         System.out.println("==================================");
     }
-
     public static void vaciarCarrito() {
         carritoNombres.clear();
         cantidades.clear();
@@ -481,14 +648,11 @@ public class Starbucks_ {
         }
         return Math.round(total * 100) / 100.0;
     }
-
     public static double aplicarDescuento(double total) {
         System.out.println("==========================================");
         System.out.println("           RESUMEN DE DESCUENTOS         ");
         System.out.println("==========================================");
-
         double totalConDescuento = total;
-
         if (total > 119.9) {
             double descuento = Math.round(total * 0.10 * 100) / 100.0;
             totalConDescuento = Math.round((total - descuento) * 100) / 100.0;
@@ -499,14 +663,12 @@ public class Starbucks_ {
             System.out.println("   Total sin descuento: S/ " + total);
             System.out.println("   (Compras mayores a S/119.90 tienen 10% de descuento)");
         }
-
         if (indiceClienteActivo != -1 && clientesCompras.get(indiceClienteActivo) >= 3) {
             LocalDateTime ahora = LocalDateTime.now();
             String diaHoy = ahora.format(DateTimeFormatter.ofPattern("dd"));
             String mesHoy = ahora.format(DateTimeFormatter.ofPattern("MM"));
             String hoyDDMM = diaHoy + "/" + mesHoy;
             String fechaNacCliente = clientesFechaNacimiento.get(indiceClienteActivo);
-
             if (!fechaNacCliente.equals(hoyDDMM)) {
                 double descuentoFrecuente = Math.round(totalConDescuento * 0.05 * 100) / 100.0;
                 totalConDescuento = Math.round((totalConDescuento - descuentoFrecuente) * 100) / 100.0;
@@ -514,7 +676,6 @@ public class Starbucks_ {
                 System.out.println("   Total final: S/ " + totalConDescuento);
             }
         }
-
         System.out.println("==========================================");
         return totalConDescuento;
     }
@@ -538,7 +699,8 @@ public class Starbucks_ {
             System.out.println("========== B E B I D A S ==========");
             System.out.println("1. Frappuccinos");
             System.out.println("2. Cafés Calientes");
-            System.out.println("3. Terminar selección de bebidas");
+            System.out.println("3. Bebidas extras agregadas");
+            System.out.println("4. Terminar selección de bebidas");
             System.out.println("Seleccione una opción: ");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -549,13 +711,15 @@ public class Starbucks_ {
                     CafeCaliente(sc);
                     break;
                 case 3:
+                    mostrarBebidasAdministrador(sc);
+                    break;
+                case 4:
                     break;
                 default:
                     System.out.println("Opción inválida");
             }
-        } while (opcion != 3);
+        } while (opcion != 4);
     }
-
     public static void frappuccino(Scanner scanner) {
         ArrayList<String> nombres = new ArrayList<>();
         nombres.add("Black & White Mocha Frappuccino");
@@ -568,7 +732,6 @@ public class Starbucks_ {
         nombres.add("Algarrobina Frappuccino");
         nombres.add("Chocolate Creme Frappuccino");
         nombres.add("Lucuma Creme Frappuccino");
-
         ArrayList<Double> precios = new ArrayList<>();
         precios.add(17.50);
         precios.add(17.50);
@@ -580,7 +743,6 @@ public class Starbucks_ {
         precios.add(16.50);
         precios.add(16.00);
         precios.add(17.50);
-
         System.out.println("---------- F R A P P U C C I N O S ----------");
         for (int i = 0; i < nombres.size(); i++) {
             System.out.println((i + 1) + ": " + nombres.get(i) + " - S/" + precios.get(i));
@@ -589,7 +751,6 @@ public class Starbucks_ {
         System.out.println("Ingrese opción: ");
         int eleccion = scanner.nextInt();
         int cantidad;
-
         if (eleccion >= 1 && eleccion <= nombres.size()) {
             System.out.println("Cantidad: ");
             cantidad = scanner.nextInt();
@@ -598,7 +759,6 @@ public class Starbucks_ {
             System.out.println("Opción fuera de rango");
         }
     }
-
     public static void CafeCaliente(Scanner sc) {
         ArrayList<String> nombres = new ArrayList<>();
         nombres.add("Flat White");
@@ -611,7 +771,6 @@ public class Starbucks_ {
         nombres.add("Mocha Blanco Cafe");
         nombres.add("Algarrobina Latte");
         nombres.add("Americano");
-
         ArrayList<Double> precios = new ArrayList<>();
         precios.add(15.50);
         precios.add(15.00);
@@ -623,7 +782,6 @@ public class Starbucks_ {
         precios.add(15.50);
         precios.add(14.50);
         precios.add(16.00);
-
         System.out.println("---------- CAFÉS CALIENTES ----------");
         for (int i = 0; i < nombres.size(); i++) {
             System.out.println((i + 1) + ": " + nombres.get(i) + " - S/" + precios.get(i));
@@ -640,14 +798,48 @@ public class Starbucks_ {
             System.out.println("Opción fuera de rango");
         }
     }
+    public static void mostrarBebidasAdministrador(Scanner sc) {
 
+        if (bebidasNombres.isEmpty()) {
+            System.out.println("No hay bebidas agregadas.");
+            return;
+        }
+
+        System.out.println("======= BEBIDAS AGREGADAS =======");
+
+        for (int i = 0; i < bebidasNombres.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + bebidasNombres.get(i)
+                    + " - S/ "
+                    + bebidasPrecios.get(i));
+        }
+
+        System.out.print("Seleccione bebida: ");
+        int opcion = sc.nextInt();
+
+        if (opcion < 1 || opcion > bebidasNombres.size()) {
+            System.out.println("❌ Opción inválida");
+            return;
+        }
+
+        System.out.print("Cantidad: ");
+        int cantidad = sc.nextInt();
+
+        agregarAlCarrito(
+                bebidasNombres.get(opcion - 1),
+                cantidad,
+                bebidasPrecios.get(opcion - 1)
+        );
+    }
+    //------------------------------------------------jhosef
     public static void menuAlimentos(Scanner l) {
         int opcion;
         do {
             System.out.println("--- A L I M E N T O S----");
             System.out.println("1. Pastries");
             System.out.println("2. Sandwiches");
-            System.out.println("3. Terminar selección de alimentos");
+            System.out.println("3. Alimentos  extras agregados");
+            System.out.println("4. Terminar selección de alimentos");
             System.out.println("Seleccione opcion: ");
             opcion = l.nextInt();
 
@@ -659,11 +851,15 @@ public class Starbucks_ {
                     menuSandwiches(l);
                     break;
                 case 3:
+                    mostrarAlimentosAdministrador(l);
+                    break;
+
+                case 4:
                     break;
                 default:
                     System.out.println("Opcion invalida");
             }
-        } while (opcion != 3);
+        } while (opcion != 4);
     }
 
     public static void menuPastries(Scanner l) {
@@ -678,7 +874,6 @@ public class Starbucks_ {
         nombres.add("Egg Bites (2 un)");
         nombres.add("Galleta Mom");
         nombres.add("Cake Pop Mom");
-
         ArrayList<Double> precios = new ArrayList<>();
         precios.add(11.00);
         precios.add(10.50);
@@ -690,7 +885,6 @@ public class Starbucks_ {
         precios.add(10.00);
         precios.add(7.00);
         precios.add(7.00);
-
         System.out.println("--------P A S T R I E S-------");
         for (int i = 0; i < nombres.size(); i++) {
             System.out.println((i + 1) + ". " + nombres.get(i) + " - S/" + precios.get(i));
@@ -705,7 +899,6 @@ public class Starbucks_ {
         int cantidad = l.nextInt();
         agregarAlCarrito(nombres.get(opcion - 1), cantidad, precios.get(opcion - 1));
     }
-
     public static void menuSandwiches(Scanner l) {
         ArrayList<String> nombres = new ArrayList<>();
         nombres.add("Sandwich Finas Hierbas");
@@ -718,7 +911,6 @@ public class Starbucks_ {
         nombres.add("Sandwich Brioche Campesino");
         nombres.add("Sandwich Panino Vesubio");
         nombres.add("Sandwich Chicken Panino");
-
         ArrayList<Double> precios = new ArrayList<>();
         precios.add(17.50);
         precios.add(7.50);
@@ -730,7 +922,6 @@ public class Starbucks_ {
         precios.add(16.00);
         precios.add(13.50);
         precios.add(14.50);
-
         System.out.println("========= S A N D W I C H E S =========");
         for (int i = 0; i < nombres.size(); i++) {
             System.out.println((i + 1) + ". " + nombres.get(i) + " - S/" + precios.get(i));
@@ -744,6 +935,39 @@ public class Starbucks_ {
         System.out.println("Ingrese cantidad: ");
         int cantidad = l.nextInt();
         agregarAlCarrito(nombres.get(opcion - 1), cantidad, precios.get(opcion - 1));
+    }
+    public static void mostrarAlimentosAdministrador(Scanner sc) {
+
+        if (alimentosNombres.isEmpty()) {
+            System.out.println("No hay alimentos agregados.");
+            return;
+        }
+
+        System.out.println("======= ALIMENTOS AGREGADOS =======");
+
+        for (int i = 0; i < alimentosNombres.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + alimentosNombres.get(i)
+                    + " - S/ "
+                    + alimentosPrecios.get(i));
+        }
+
+        System.out.print("Seleccione alimento: ");
+        int opcion = sc.nextInt();
+
+        if (opcion < 1 || opcion > alimentosNombres.size()) {
+            System.out.println("❌ Opción inválida");
+            return;
+        }
+
+        System.out.print("Cantidad: ");
+        int cantidad = sc.nextInt();
+
+        agregarAlCarrito(
+                alimentosNombres.get(opcion - 1),
+                cantidad,
+                alimentosPrecios.get(opcion - 1)
+        );
     }
     //Anderson_______________________________________________________________________________________________________
     public static String elegirDepartamento(Scanner sc) {
@@ -826,7 +1050,6 @@ public class Starbucks_ {
         System.out.println("Seleccione método de pago: ");
         int opPago = sc.nextInt();
         sc.nextLine();
-
         String metodoPago = "";
         switch (opPago) {
             case 1:
@@ -850,7 +1073,6 @@ public class Starbucks_ {
         }
         return metodoPago;
     }
-
     public static String pagoTarjeta(Scanner sc, double total) {
         String numeroTarjeta = "";
         String fechaVencimiento = "";
@@ -898,7 +1120,6 @@ public class Starbucks_ {
         String numeroOculto = "************" + numeroTarjeta.substring(12);
         return "Tarjeta (" + numeroOculto + ")";
     }
-
     public static String pagoYape(Scanner sc, double total) {
         System.out.println("======= PAGO CON YAPE =======");
         System.out.println("Monto a pagar: S/ " + total);
@@ -913,7 +1134,6 @@ public class Starbucks_ {
         System.out.println("✅ Pago con Yape registrado. Código: " + codigoYape);
         return "Yape (" + celularYape + ")";
     }
-
     public static String pagoPlin(Scanner sc, double total) {
         System.out.println("======= PAGO CON PLIN =======");
         System.out.println("Monto a pagar: S/ " + total);
@@ -925,7 +1145,6 @@ public class Starbucks_ {
         System.out.println("✅ Pago con Plin registrado. Código: " + codigoPlin);
         return "Plin (" + celularPlin + ")";
     }
-
     public static String pagoPrexpe(Scanner sc, double total) {
         System.out.println("======= PAGO CON PREXPE =======");
         System.out.println("Monto a pagar: S/ " + total);
@@ -936,7 +1155,6 @@ public class Starbucks_ {
         System.out.println("✅ Pago con Prexpe registrado. Código: " + codigoPrexpe);
         return "Prexpe (" + cuentaPrexpe + ")";
     }
-
     public static String pagoLemonPay(Scanner sc, double total) {
         System.out.println("======= PAGO CON LEMON PAY =======");
         System.out.println("Monto a pagar: S/ " + total);
@@ -947,7 +1165,6 @@ public class Starbucks_ {
         System.out.println("✅ Pago con Lemon Pay registrado. ID: " + idLemon);
         return "Lemon Pay (ID: " + idLemon + ")";
     }
-
     public static void animacionCarga() {
         System.out.println();
         System.out.println("  Procesando su pago, por favor espere...");
@@ -969,7 +1186,6 @@ public class Starbucks_ {
         }
         System.out.println();
     }
-
     public static void generarBoleta(String nombre, String dni, String correo,
                                      String telefono, String departamento,
                                      double total, String metodoPago, String tienda) {
@@ -1041,6 +1257,47 @@ public class Starbucks_ {
             System.out.println("📄 Boleta guardada en: " + nombreArchivo);
         } catch (IOException e) {
             System.out.println("⚠️ No se pudo guardar la boleta en archivo: " + e.getMessage());
+        }
+    }
+    public static void cargarClientes() {
+        try {
+            BufferedReader lector =
+                    new BufferedReader(new FileReader("clientes.txt"));
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String datos[] = linea.split("\\|");
+                clientesCorreos.add(datos[0]);
+                clientesContrasenas.add(datos[1]);
+                clientesNombres.add(datos[2]);
+                clientesDNI.add(datos[3]);
+                clientesTelefonos.add(datos[4]);
+                clientesFechaNacimiento.add(datos[5]);
+                clientesCompras.add(Integer.parseInt(datos[6]));
+                clientesTotalGastado.add(Double.parseDouble(datos[7]));
+            }
+            lector.close();
+        } catch (IOException e) {
+        }
+    }
+    public static void actualizarArchivoClientes() {
+        try {
+            FileWriter escritor = new FileWriter("clientes.txt");
+            for (int i = 0; i < clientesCorreos.size(); i++) {
+                escritor.write(
+                        clientesCorreos.get(i) + "|" +
+                                clientesContrasenas.get(i) + "|" +
+                                clientesNombres.get(i) + "|" +
+                                clientesDNI.get(i) + "|" +
+                                clientesTelefonos.get(i) + "|" +
+                                clientesFechaNacimiento.get(i) + "|" +
+                                clientesCompras.get(i) + "|" +
+                                clientesTotalGastado.get(i) +
+                                "\n"
+                );
+            }
+            escritor.close();
+        } catch (IOException e) {
+            System.out.println("Error al actualizar clientes.");
         }
     }
 }

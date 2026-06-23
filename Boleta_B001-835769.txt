@@ -1,0 +1,40 @@
+==================================================
+                 STARBUCKS COFFEE                 
+                 RUC: 20100070970                 
+      Av. Benavides 415, Miraflores - Lima        
+                 Tel: (01) 242-2600               
+==================================================
+                 BOLETA DE VENTA                  
+ Boleta N°       : B001-835769
+ Fecha           : 23/06/2026
+ Hora            : 08:19:01
+ Cod. Validacion : SBX327449
+--------------------------------------------------
+ DATOS DEL CLIENTE
+--------------------------------------------------
+ Nombre       : jhosef wagner
+ DNI          : 60170499
+ Correo       : jozan@gmail.com
+ Telefono     : 935010802
+ Departamento : Puno
+--------------------------------------------------
+ DETALLE DE COMPRA
+--------------------------------------------------
+ Algarrobina Frappuccino x4  ->  S/ 66.0
+ Caramel Macchiato x9  ->  S/ 135.0
+ Galleta de Chocochips x3  ->  S/ 22.5
+ Sandwich Panino Vesubio x10  ->  S/ 135.0
+--------------------------------------------------
+ Subtotal sin IGV : S/ 273.43
+ IGV (18%)        : S/ 49.22
+ TOTAL            : S/ 322.65
+--------------------------------------------------
+ Metodo de pago   : Yape (935010802)
+ Tienda de recojo : Starbucks Puno
+--------------------------------------------------
+ Esta boleta sirve como comprobante de compra.    
+ Conserve este documento para cualquier consulta. 
+--------------------------------------------------
+      Gracias por tu visita a Starbucks!          
+     Esperamos verte pronto. Have a nice day!     
+==================================================

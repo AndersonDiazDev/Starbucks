@@ -1,0 +1,41 @@
+==================================================
+                 STARBUCKS COFFEE                 
+                 RUC: 20100070970                 
+      Av. Benavides 415, Miraflores - Lima        
+                 Tel: (01) 242-2600               
+==================================================
+                 BOLETA DE VENTA                  
+ Boleta N°       : B001-652687
+ Fecha           : 23/06/2026
+ Hora            : 09:23:43
+ Cod. Validacion : SBX295505
+--------------------------------------------------
+ DATOS DEL CLIENTE
+--------------------------------------------------
+ Nombre       : Yojan Anderson
+ DNI          : 65435678
+ Correo       : andersxon@gmail.com
+ Telefono     : 987987987
+ Departamento : Cusco
+--------------------------------------------------
+ DETALLE DE COMPRA
+--------------------------------------------------
+ Bebida de Cortesía Starbucks x1  ->  S/ 0.0
+ Bebida Gratis de Cumpleaños x1  ->  S/ 0.0
+ Ultimate Caramel Frappuccino x3  ->  S/ 51.0
+ Latte Macchiato x3  ->  S/ 39.0
+ Sandwich Croissant Jamon del Pais & Queso x3  ->  S/ 49.5
+--------------------------------------------------
+ Subtotal sin IGV : S/ 106.4
+ IGV (18%)        : S/ 19.15
+ TOTAL            : S/ 125.55
+--------------------------------------------------
+ Metodo de pago   : Tarjeta (************1234)
+ Tienda de recojo : Starbucks Cusco
+--------------------------------------------------
+ Esta boleta sirve como comprobante de compra.    
+ Conserve este documento para cualquier consulta. 
+--------------------------------------------------
+      Gracias por tu visita a Starbucks!          
+     Esperamos verte pronto. Have a nice day!     
+==================================================
