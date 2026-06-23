@@ -1,4 +1,4 @@
-
+//1-349_______________JHOSEP________________________________________________________________________________
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -346,6 +346,7 @@ public class Starbucks_ {
 
         }
     }
+    //349-651__________________________JHONER_________________________________________
     public static void adminEliminarproductos(Scanner sc) {
 
         if (productosNombres.isEmpty()) {
@@ -648,6 +649,7 @@ public class Starbucks_ {
         }
         return Math.round(total * 100) / 100.0;
     }
+   // 652-975_________________________JHOSEF__________________________
     public static double aplicarDescuento(double total) {
         System.out.println("==========================================");
         System.out.println("           RESUMEN DE DESCUENTOS         ");
@@ -831,7 +833,7 @@ public class Starbucks_ {
                 bebidasPrecios.get(opcion - 1)
         );
     }
-    //------------------------------------------------jhosef
+
     public static void menuAlimentos(Scanner l) {
         int opcion;
         do {
@@ -969,7 +971,7 @@ public class Starbucks_ {
                 alimentosPrecios.get(opcion - 1)
         );
     }
-    //Anderson_______________________________________________________________________________________________________
+    //975-1304__________________________________ANDERSON________________________________________________________
     public static String elegirDepartamento(Scanner sc) {
         ArrayList<String> departamentos = new ArrayList<>();
         departamentos.add("Lima");
