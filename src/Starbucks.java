@@ -1,3 +1,8 @@
+// cumpleaños no reconoce, no cumple con regalar una bebida a preferencia del cumpleañero de parte de la casa.
+// corroborar que funcione el cliente frecuente; a quien tambien se le dara una bebida gratis aleatorio.
+// al iniciar sesion al momento de pagar ya no deberia pedir datos de nuevo, deberia pasar a proceso de pago.
+// no guarda registros
+// panel de añadir productos incorrecto(falta fijar  en que seccion añadir por ejemplo bebidas y eliminar no reconoce el producto mencionado a eliminar)
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -5,7 +10,7 @@ import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Starbucks_ {
+public class Starbucks {
     static final String ADMIN_USUARIO = "admin@starbucks.com";
     static final String ADMIN_CONTRASENA = "admin1234";
 
